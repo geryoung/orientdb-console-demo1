@@ -1,0 +1,78 @@
+
+var ODatabase = require('orientjs').ODatabase;
+var db = new ODatabase({
+  host: 'localhost',
+  port: 2424,
+  username: 'root',
+  password: 'hello',
+  name: 'test2'
+});
+
+var friendECreateSqlList = [
+'create edge Friend FROM ( select from Person where name="John" AND surename="Doe") To (select from Person where name="Frank" AND surename="Bean")',
+'create edge Friend FROM ( select from Person where name="John" AND surename="Doe") To (select from Person where name="Jenny" AND surename="Smith")',
+'create edge Friend FROM ( select from Person where name="John" AND surename="Doe") To (select from Person where name="John" AND surename="Smith")',
+
+'create edge Friend FROM ( select from Person where name="Frank" AND surename="Bean") To (select from Person where name="Mark" AND surename="Bean")',
+
+'create edge Friend FROM ( select from Person where name="Jenny" AND surename="Smith") To (select from Person where name="Mark" AND surename="Bean")',
+
+'create edge Friend FROM ( select from Person where name="John" AND surename="Smith") To (select from Person where name="Jenny" AND surename="Smith")'
+]
+
+
+db.open()
+  .then(function () {
+
+    var taskList = [];
+    friendECreateSqlList.forEach(function (sql) {
+
+      //查找
+
+      // var t = db
+      //     .select()
+      //     .from('Friend')
+      //     .where(_friend)
+      //     .all()
+      //     .then(function (select) {
+      //         console.log('Hitters:', select);
+      //         if (select && select.length != 0) {
+      //             return;
+      //         }
+      //         //插入数据
+      //         // db
+      //         // .insert()
+      //         // .into('Person')
+      //         // .set(_friend);
+      //     });
+
+      var t = db.query(sql)
+              .then(function (f) {
+                console.log('Created EDGE: ' + f.from);
+              });
+
+      taskList.push(t);
+    });
+
+
+    var task = taskList.reduce(function (preTask, currentTask) {
+                return preTask
+                  .then(function (res) {
+
+                    console.log(res);
+                    return currentTask;
+                  });
+              }, Promise.resolve());
+
+    task
+      .then(function (res) {
+        console.log(res);
+      })
+      .catch(function (err) {
+        //
+        console.log(err);
+      })
+  })
+  .catch(function (err) {
+    console.log(err);
+  });
