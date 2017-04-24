@@ -113,6 +113,8 @@ sql = "select from Contain where inE('Contain').out('Keyword').name CONTAINS 'A'
 sql = "select from inE('Contain').out('Keyword')"; //n
 sql = "TRAVERSE out('Contain') from #34:1 WHILE $depth < 3"; //n
 sql = "select FROM (TRAVERSE in('Contain') FROM (SELECT FROM Keyword WHERE name = 'A') WHILE $depth = 0) ";
+// sql = "select FROM (TRAVERSE both('Contain'),both('Contain') FROM (SELECT FROM Keyword WHERE name = 'A') WHILE $depth < 3 ) ";
+sql = "select FROM (TRAVERSE in('Contain') FROM (SELECT FROM Keyword WHERE name = 'A') WHILE $depth < 3 ) ";
 
 //sql = 'SELECT from Keyword';
 
